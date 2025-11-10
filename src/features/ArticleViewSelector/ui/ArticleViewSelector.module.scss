@@ -1,0 +1,17 @@
+.article-view-selector {
+  .not-selected {
+    fill: var(--secondary-color);
+  }
+}
+
+.article-view-selector-redesigned {
+  .not-selected {
+    color: var(--light-bg-redesigned);
+  }
+}
+
+.get-h-stack {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}

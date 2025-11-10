@@ -1,0 +1,27 @@
+.article-list {
+  color: inherit;
+
+  // height: 100%;
+}
+
+.big {
+  .card {
+    margin-bottom: 30px;
+  }
+}
+
+.small {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+
+  .card {
+    display: inline-flex;
+    height: 300px;
+  }
+
+  .row {
+    display: flex;
+    gap: 30px;
+  }
+}

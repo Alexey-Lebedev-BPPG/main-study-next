@@ -1,0 +1,61 @@
+.input-wrapper {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  padding: 8px 16px;
+  border: 2px solid var(--icon-redesigned);
+  border-radius: 48px;
+}
+
+.input {
+  width: 100%;
+  border: none;
+
+  color: var(--text-redesigned);
+
+  background: none;
+  outline: none;
+
+  &::placeholder {
+    color: var(--hint-redesigned);
+  }
+}
+
+.readonly {
+  opacity: 0.7;
+}
+
+.focused {
+  border: 2px solid var(--accent-redesigned);
+
+  .addon-left svg,
+  .addon-right svg {
+    color: var(--accent-redesigned);
+  }
+}
+
+.addon-left,
+.addon-right {
+  display: flex;
+}
+
+.with-addon-left {
+  padding-left: 8px;
+}
+
+.with-addon-right {
+  padding-right: 8px;
+}
+
+.s {
+  height: 32px;
+}
+
+.m {
+  height: 38px;
+}
+
+.l {
+  height: 44px;
+}

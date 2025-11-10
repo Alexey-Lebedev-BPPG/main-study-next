@@ -1,0 +1,85 @@
+import { FC, ReactNode, UIEvent, useRef } from 'react';
+import cls from './Page.module.scss';
+import { StateSchema } from '@/app-fsd/providers/StoreProvider';
+import { getScrollSavePath, scrollSaveActions } from '@/features/ScrollSave';
+import { PAGE_ID } from '@/shared/const/pageId';
+import { classNames } from '@/shared/lib/classNames/classNames';
+import { toggleFeatures } from '@/shared/lib/features';
+import { useAppDispatch, useAppSelector } from '@/shared/lib/hooks/redux';
+import { useInfiniteScroll } from '@/shared/lib/hooks/useInfiniteScroll/useInfiniteScroll';
+import { useInitialEffect } from '@/shared/lib/hooks/useInitialEffect/useInitialEffect';
+import { useThrottle } from '@/shared/lib/hooks/useThrottle/useThrottle';
+import { useAppPathname } from '@/shared/lib/router/navigation';
+import { TestProps } from '@/shared/types/tests';
+
+export interface IPageProps extends TestProps {
+  children: ReactNode;
+  className?: string;
+  // функция для отработки при достижении конца страницы
+  onScrollEnd?: () => void;
+}
+
+// компонент для оборачивания страниц, который применяет некоторые стили для всех страниц
+export const Page: FC<IPageProps> = props => {
+  const { children, className, onScrollEnd, ...otherProps } = props;
+
+  const dispatch = useAppDispatch();
+  const pathname = useAppPathname();
+
+  const wrapperRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+
+  // получаем позицию скролла из редакса по нашей странице
+  const scrollPosition = useAppSelector((state: StateSchema) =>
+    getScrollSavePath(state, pathname),
+  );
+
+  useInfiniteScroll({
+    callback: onScrollEnd,
+    triggerRef,
+    // чиним скролл, т.к. теперь у нас скролл на главной странице
+    wrapperRef: toggleFeatures({
+      name: 'isAppRedesigned',
+      off: () => wrapperRef,
+      on: () => undefined,
+    }),
+  });
+
+  // возвращаем страницу на позицию
+  useInitialEffect(() => {
+    wrapperRef.current.scrollTop = scrollPosition;
+  });
+
+  // функция сохранения скролла
+  const onScrollHandler = useThrottle((event: UIEvent<HTMLDivElement>) => {
+    // получаем значение в пикселях от крайней точки сверху и записываем в редакс
+    dispatch(
+      scrollSaveActions.setScrollPosition({
+        path: pathname,
+        position: event.currentTarget.scrollTop,
+      }),
+    );
+  });
+
+  return (
+    <main
+      ref={wrapperRef}
+      id={PAGE_ID}
+      data-testid={otherProps['data-testid'] || 'Page'}
+      className={classNames(
+        // отображаем класс от фичи
+        toggleFeatures({
+          name: 'isAppRedesigned',
+          off: () => cls.page,
+          on: () => cls['page-redesigned'],
+        }),
+        {},
+        [className],
+      )}
+      onScroll={onScrollHandler}
+    >
+      {children}
+      {!!onScrollEnd && <div ref={triggerRef} className={cls.trigger} />}
+    </main>
+  );
+};

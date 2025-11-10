@@ -1,0 +1,28 @@
+.navbar {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  height: var(--navbar-height);
+  padding: 20px;
+
+  background: var(--inverted-bg-color);
+}
+
+.navbar-redesigned {
+  padding: 16px;
+}
+
+.links,
+.actions {
+  margin-left: auto;
+}
+
+.main-link {
+  margin-right: 15px;
+}
+
+.app-name {
+  width: var(--sidebar-width);
+  margin-left: 15px;
+}
